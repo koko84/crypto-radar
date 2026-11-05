@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d18">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="description" content="Global cryptocurrency market dashboard with market scanner, watchlist and unusual activity indicators.">
+<title>CRYPTO RADAR PRO</title>
+<style>
+:root{--bg:#080d18;--panel:#101827;--panel2:#131f31;--line:#243247;--text:#eef4ff;--muted:#91a2bb;--green:#35e0a1;--red:#ff647c;--blue:#65a8ff;--gold:#f5c96a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% -10%,#172a45 0,transparent 35%),var(--bg);color:var(--text);font:15px Inter,system-ui,Arial,sans-serif}
+header{padding:22px max(18px,calc((100% - 1400px)/2));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;background:#080d18dd;position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#37e5a5,#2387ff);display:grid;place-items:center;color:#07111b;font-size:22px;font-weight:900}.brand h1{font-size:19px;letter-spacing:1.4px;margin:0}.brand small{color:var(--muted);letter-spacing:2px;font-size:10px}.status{color:var(--green);font-size:12px;display:flex;align-items:center;gap:7px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+main{max-width:1400px;margin:auto;padding:26px 18px 50px}.hero{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:22px}.eyebrow{color:var(--green);font-size:11px;letter-spacing:2px;font-weight:800}.hero h2{font-size:clamp(25px,4vw,38px);margin:8px 0}.hero p{color:var(--muted);margin:0;max-width:650px;line-height:1.6}.actions{display:flex;gap:9px;flex-wrap:wrap}button,select,input{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--panel2);color:var(--text)}button.primary{background:var(--green);border-color:var(--green);color:#06140f;font-weight:800}button:hover{filter:brightness(1.12)}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}.card{background:linear-gradient(145deg,#121e30,#0e1725);border:1px solid var(--line);border-radius:15px;padding:17px;min-width:0}.card .label{color:var(--muted);font-size:12px}.metric{font-size:25px;font-weight:800;margin:9px 0 4px;letter-spacing:-.5px}.sub{font-size:12px;color:var(--muted)}.positive{color:var(--green)!important}.negative{color:var(--red)!important}.section{background:#0d1624;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:16px}.section-head{padding:17px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line)}.section-head h3{margin:0;font-size:16px}.tools{display:flex;gap:8px;flex-wrap:wrap}.tools input,.tools select{background:#0a1220;border:1px solid var(--line);border-radius:9px;color:var(--text);padding:9px 11px;min-width:130px}.tools input{min-width:min(240px,65vw)}.tabs{display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}.tabs button{padding:7px 11px;font-size:12px;color:var(--muted)}.tabs button.active{color:var(--green);border-color:#267e63;background:#102a28}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:right;padding:13px 16px;border-bottom:1px solid #1d2a3b;white-space:nowrap;font-size:13px}th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.7px}th:first-child,td:first-child{text-align:left}tbody tr:hover{background:#142238}.coin{display:flex;align-items:center;gap:10px;text-align:left}.coin img{width:28px;height:28px;border-radius:50%}.coin strong{display:block}.coin small{color:var(--muted)}.star{background:none;border:0;padding:3px;color:#71829b;font-size:18px}.star.on{color:var(--gold)}.signal{font-size:11px;padding:5px 8px;border-radius:20px;background:#1b2a3b;color:#b7c7dd}.signal.hot{background:#3b2a17;color:var(--gold)}.signal.up{background:#12352b;color:var(--green)}.signal.down{background:#3b1d2a;color:var(--red)}.empty,.loading,.error{padding:32px;text-align:center;color:var(--muted)}.error{color:var(--red)}.footer{color:var(--muted);font-size:11px;line-height:1.7;padding:18px 3px}.notice{border:1px solid #705b2b;background:#241f14;color:#e8d49a;padding:12px 14px;border-radius:11px;font-size:12px;line-height:1.6;margin-top:16px}.mobile-note{display:none}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}header{position:static}}
+@media(max-width:480px){main{padding:20px 12px 35px}.grid{gap:8px}.card{padding:13px}.metric{font-size:20px}.brand h1{font-size:16px}.mobile-note{display:block;color:var(--muted);font-size:11px;padding:8px 16px}}
+
+.chart-layout{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:14px;padding:16px}
+#candleChart{width:100%;height:360px;min-height:300px}
+.chart-side{display:grid;gap:10px;align-content:start}
+.chart-stat{background:#101d2e;border:1px solid #243247;border-radius:11px;padding:12px}
+.chart-stat span{display:block;color:#91a2bb;font-size:11px;margin-bottom:6px}
+.chart-stat strong{font-size:17px}
+.chart-controls{display:flex;gap:8px;flex-wrap:wrap}
+.chart-controls select{background:#0a1220;border:1px solid #243247;color:#eef4ff;border-radius:8px;padding:8px}
+@media(max-width:760px){.chart-layout{grid-template-columns:1fr}#candleChart{height:300px}}
+.ad-slot{margin:16px 0;min-height:92px;border:1px dashed #40516a;border-radius:12px;background:#0c1421;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;color:#91a2bb;padding:14px}
+.ad-slot span{font-size:9px;letter-spacing:1.8px;color:#71839d}
+.ad-slot strong{font-size:13px;color:#c4d2e6;font-weight:600}
+.ad-slot small{font-size:11px}
+.ad-bottom{min-height:110px}
+.site-links{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0}
+.site-links a{color:#91a2bb;text-decoration:none;font-size:12px}
+.site-links a:hover{color:#35e0a1}
+
+</style>
+</head>
+<body>
+<header>
+ <div class="brand"><div class="logo">⌁</div><div><h1>CRYPTO RADAR PRO</h1><small>GLOBAL MARKET INTELLIGENCE</small></div></div>
+ <div class="actions"><select id="languageSelect" aria-label="Language" style="background:#101827;color:#eef4ff;border:1px solid #243247;border-radius:9px;padding:9px"><option value="en">English</option><option value="ar">العربية</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="tr">Türkçe</option></select><div class="status"><span class="dot"></span><span id="statusText">CONNECTING TO MARKET DATA</span></div></div>
+</header>
+<main>
+ <div class="hero">
+  <div><div class="eyebrow">LIVE MARKET SCANNER</div><h2>See the market before it moves.</h2><p>Track global crypto markets, spot unusual activity and build your watchlist in one professional dashboard.</p></div>
+  <div class="actions"><button id="refreshBtn" class="primary">↻ Refresh market</button><button id="alertBtn">Enable alerts</button></div>
+ </div>
+ 
+ <div class="ad-slot" aria-label="Advertisement placement">
+   <span>ADVERTISEMENT</span><strong>AdSense banner placement</strong>
+   <small>Will activate after AdSense approval and publisher ID setup.</small>
+ </div>
+
+ <div class="grid">
+  <div class="card"><div class="label">Global market cap</div><div class="metric" id="globalCap">—</div><div class="sub" id="globalCapChange">Loading global data</div></div>
+  <div class="card"><div class="label">24h trading volume</div><div class="metric" id="globalVolume">—</div><div class="sub">Across tracked crypto market</div></div>
+  <div class="card"><div class="label">BTC dominance</div><div class="metric" id="btcDominance">—</div><div class="sub">Bitcoin share of market cap</div></div>
+  <div class="card"><div class="label">Assets scanned</div><div class="metric" id="assetCount">—</div><div class="sub">Latest available market snapshot</div></div>
+ </div>
+ <section class="section">
+  <div class="section-head"><h3>◈ Market scanner</h3><div class="tools"><input id="search" placeholder="Search coin or symbol…"><select id="sort"><option value="market_cap_desc">Market cap ↓</option><option value="price_change_percentage_24h_desc">Top gainers</option><option value="price_change_percentage_24h_asc">Top losers</option><option value="total_volume_desc">Volume ↓</option></select></div></div>
+  <div class="tabs"><button class="active" data-filter="all">All assets</button><button data-filter="gainers">Gainers</button><button data-filter="losers">Losers</button><button data-filter="volume">High volume</button><button data-filter="watchlist">★ Watchlist</button><button data-filter="radar">Unusual activity</button></div>
+  <div class="mobile-note">Swipe horizontally to view all market columns.</div>
+  <div class="table-wrap"><table><thead><tr><th>Asset</th><th>Price</th><th>24h</th><th>Market cap</th><th>24h volume</th><th>Volume / cap</th><th>Radar</th></tr></thead><tbody id="coinRows"><tr><td colspan="7" class="loading">Loading live market data…</td></tr></tbody></table></div>
+  <div id="resultNote" class="footer" style="padding:12px 16px">Market data is loading.</div>
+ </section>
+
+ <div class="ad-slot ad-bottom" aria-label="Advertisement placement">
+   <span>ADVERTISEMENT</span><strong>AdSense responsive placement</strong>
+   <small>Reserved space — no ads are served until approved ad code is added.</small>
+ </div>
+
+ <div class="notice"><strong>Important:</strong> Radar labels are rule-based indicators, not buy/sell recommendations. “Unusual activity” is a simple volume-to-market-cap screen and does not prove whale activity or predict a pump. Crypto assets are volatile; verify information independently.</div>
+ <nav class="site-links"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a><a href="disclaimer.html">Risk Disclaimer</a><a href="contact.html">Contact</a></nav>
+ <div class="footer">Data provider: CoinGecko public API. Data may be delayed, rate-limited or temporarily unavailable. This version does not connect to exchange accounts, hold funds, or execute trades. Watchlist is saved locally in this browser.</div>
+</main>
+<script>
+const API='https://api.coingecko.com/api/v3';
+let coins=[], filter='all', favorites=new Set(JSON.parse(localStorage.getItem('crp_watchlist')||'[]'));
+const $=id=>document.getElementById(id);
+const money=n=>{if(n==null)return '—';if(n>=1e12)return '$'+(n/1e12).toFixed(2)+'T';if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B';if(n>=1e6)return '$'+(n/1e6).toFixed(2)+'M';if(n>=1e3)return '$'+(n/1e3).toFixed(2)+'K';return '$'+Number(n).toLocaleString(undefined,{maximumFractionDigits:6})};
+const pct=n=>n==null?'—':(n>0?'+':'')+Number(n).toFixed(2)+'%';
+const cls=n=>n>=0?'positive':'negative';
+async function load(){
+ $('statusText').textContent='UPDATING MARKET DATA';
+ $('coinRows').innerHTML='<tr><td colspan="7" class="loading">Refreshing market data…</td></tr>';
+ try{
+  const [globalRes,marketRes]=await Promise.all([
+   fetch(API+'/global'),
+   fetch(API+'/coins/markets?vs_currency=usd&order='+$('sort').value+'&per_page=100&page=1&sparkline=false&price_change_percentage=24h')
+  ]);
+  if(!globalRes.ok||!marketRes.ok)throw new Error('Market provider is temporarily unavailable. Please wait and refresh.');
+  const gd=(await globalRes.json()).data; coins=await marketRes.json();
+  $('globalCap').textContent=money(gd.total_market_cap.usd);
+  $('globalVolume').textContent=money(gd.total_volume.usd);
+  $('btcDominance').textContent=gd.market_cap_percentage.btc.toFixed(1)+'%';
+  $('assetCount').textContent='100';
+  $('globalCapChange').innerHTML='<span class="'+cls(gd.market_cap_change_percentage_24h_usd)+'">'+pct(gd.market_cap_change_percentage_24h_usd)+'</span> over 24 hours';
+  $('statusText').textContent='MARKET DATA UPDATED';
+  render();
+ }catch(e){$('statusText').textContent='DATA CONNECTION ISSUE';$('coinRows').innerHTML='<tr><td colspan="7" class="error">'+e.message+'</td></tr>';$('resultNote').textContent='Check your connection or try again later. The free public API may apply rate limits.'}
+}
+function radar(c){let ratio=c.total_volume&&c.market_cap?c.total_volume/c.market_cap:0; if(ratio>.25)return {label:'High activity',kind:'hot'};if(c.price_change_percentage_24h>8)return {label:'Strong move',kind:'up'};if(c.price_change_percentage_24h< -8)return {label:'Sharp decline',kind:'down'};return {label:'Normal',kind:''}}
+function render(){
+ const q=$('search').value.toLowerCase().trim();
+ let list=coins.filter(c=>(c.name.toLowerCase().includes(q)||c.symbol.toLowerCase().includes(q)));
+ list=list.filter(c=>{let p=c.price_change_percentage_24h||0,ratio=c.market_cap?c.total_volume/c.market_cap:0;
+  if(filter==='gainers')return p>0;if(filter==='losers')return p<0;if(filter==='volume')return ratio>.1;if(filter==='watchlist')return favorites.has(c.id);if(filter==='radar')return ratio>.25||Math.abs(p)>8;return true});
+ $('coinRows').innerHTML=list.length?list.map(c=>{let r=radar(c);return `<tr><td><div class="coin"><button class="star ${favorites.has(c.id)?'on':''}" data-star="${c.id}" aria-label="Toggle watchlist">${favorites.has(c.id)?'★':'☆'}</button><img src="${c.image}" alt="" loading="lazy"><div><strong>${escapeHtml(c.name)}</strong><small>${c.symbol.toUpperCase()} · #${c.market_cap_rank||'—'}</small></div></div></td><td>${money(c.current_price)}</td><td class="${cls(c.price_change_percentage_24h||0)}">${pct(c.price_change_percentage_24h)}</td><td>${money(c.market_cap)}</td><td>${money(c.total_volume)}</td><td>${c.market_cap?(c.total_volume/c.market_cap*100).toFixed(1)+'%':'—'}</td><td><span class="signal ${r.kind}">${r.label}</span></td></tr>`}).join(''):'<tr><td colspan="7" class="empty">No assets match this filter in the current 100-coin snapshot.</td></tr>';
+ $('resultNote').textContent=`Showing ${list.length} of ${coins.length} assets in the current snapshot. Last updated: ${new Date().toLocaleTimeString()}.`;
+ document.querySelectorAll('[data-star]').forEach(b=>b.addEventListener('click',()=>{let id=b.dataset.star;favorites.has(id)?favorites.delete(id):favorites.add(id);localStorage.setItem('crp_watchlist',JSON.stringify([...favorites]));render()}));
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+$('refreshBtn').addEventListener('click',load);$('sort').addEventListener('change',load);$('search').addEventListener('input',render);
+document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));render()}));
+$('alertBtn').addEventListener('click',async()=>{if(!('Notification'in window)){alert('Browser notifications are not supported here.');return}let p=await Notification.requestPermission();alert(p==='granted'?'Alerts permission enabled. This first version does not yet run background monitoring.':'Notifications were not enabled.')});
+load();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+</body></html>
