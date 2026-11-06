@@ -1,10 +1,18 @@
 {
-  "name": "CRYPTO RADAR PRO",
-  "short_name": "Crypto Radar",
-  "start_url": "./index.html",
+  "name": "CryptoLens - Smart Crypto Insights",
+  "short_name": "CryptoLens",
+  "description": "Live crypto prices, portfolio tracker, price alerts and market insights.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#080d18",
-  "theme_color": "#080d18",
-  "description": "Global cryptocurrency market dashboard",
-  "icons": []
+  "orientation": "portrait",
+  "background_color": "#0B0E14",
+  "theme_color": "#6C5CE7",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "https://ui-avatars.com/api/?name=C&background=6C5CE7&color=fff&size=192&font-size=0.5", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "https://ui-avatars.com/api/?name=C&background=6C5CE7&color=fff&size=512&font-size=0.5", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
 }
